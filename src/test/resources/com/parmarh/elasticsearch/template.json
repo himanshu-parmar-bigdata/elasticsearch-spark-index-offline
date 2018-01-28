@@ -1,0 +1,34 @@
+{
+  "template": "*",
+  "settings": {
+    "index.cache.query.enable": true,
+    "number_of_replicas": 0,
+    "number_of_shards": 8
+  },
+  "mappings": {
+    "mydata": {
+      "dynamic": "strict",
+      "_all": {
+        "enabled": false
+      },
+      "properties": {
+        "a": {
+          "type": "integer",
+          "index": "not_analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "doc_values": true
+        },
+        "b": {
+          "type": "string",
+          "index": "not_analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "doc_values": true
+        }
+      }
+    }
+  }
+}
