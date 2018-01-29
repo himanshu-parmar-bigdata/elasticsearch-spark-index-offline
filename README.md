@@ -59,11 +59,9 @@ Below is the description of command line arguements:
 
 Note: #5 and #6 must match with mapping name in template JSON file.
 
-### To debug and run this functionality quickly on your local machine, you can also read input and write
-final output to local directory:
+### To debug and run this functionality quickly on your local machine, you can also read input and write final output to local directory:
 Run src/test/ESIndexShardSnapshotCreatorTest class with below arguments:
 ```
-Java ESIndexShardSnapshotCreatorTest 
 <local path to user input JSON dump>
 /tmp/es-test/my_backup_repo/
 <Number of shards>
@@ -72,4 +70,37 @@ Java ESIndexShardSnapshotCreatorTest
 <Index_type>
 ```
 
+### Register snapshot repo
+Snapshot repo on s3 location and Elasticsearch is managed AWS service :
+```
+curl -XPUT 'http://<es_endpoint>:<es_port>/_snapshot/my_backup_repo' -d '{
+{ 
+  "type": "s3",
+  "settings": {
+    "compress": "true",
+    "bucket": "<s3 bucket name where repo is stored>",
+    "region": "us-east-1",
+    "role_arn": "<AWS Elasticsearch ARN role>"
+  }
+}'  
+  
+```
+Snapshot repo is on local filesystem and Elasticsearch is locally installed:
+```
+1. create /tmp/es-test/my_backup_repo dir and give it all permissions
+2. create on local elasticsearch snapshot repo
 
+curl -XPUT 'http://localhost:9200/_snapshot/my_backup_repo' -d '{
+	 "type": "fs",
+		  "settings": {
+		  "location": "/tmp/es-test/my_backup_repo/",
+		  "compress": true
+	 	}
+}'
+	 
+```
+### Restore snapshot
+```
+$ curl -XPOST "http://<es_endpoint>:<es_port>/_snapshot/my_backup_repo/snapshot_<index_name>/_restore"
+
+```
